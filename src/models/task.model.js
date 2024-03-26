@@ -8,6 +8,10 @@ const taskSchema = new Schema({
     isCompleted : {
         type : Boolean,
         default : false
+    },
+    owner : {
+        type : Schema.Types.ObjectId,
+        ref : "User"
     }
 });
 

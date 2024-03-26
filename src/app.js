@@ -1,7 +1,8 @@
 import express from "express"
 import cors from "cors"
-import {router} from "./routes/task.route.js"
+import {taskRouter} from "./routes/task.route.js"
 import cookieParser from "cookie-parser";
+import {userRouter} from "./routes/user.route.js"
 
 
 const app = express();
@@ -25,7 +26,8 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 //import router
- app.use('/api/v1/tasks' , router);
+app.use('/api/v1/users', userRouter);
+ app.use('/api/v1/users/tasks' , taskRouter);
 
 
 export default app;

@@ -25,7 +25,7 @@ const getTask = asyncHandler(async (req , res)=>{
 
     if(!taskId) throw new ApiError(400 , "Please provide task id")
 
-    const task = await Task.find({$and : [{owner : userId}, {_id : taskId}]});
+    const task = await Task.find({_id : taskId});
 
     if(!task) throw new ApiError(404 , "No task found ");
 

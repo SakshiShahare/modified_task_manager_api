@@ -1,44 +1,54 @@
-import mongoose , {Schema} from "mongoose"
+import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
-const userSchema  = new Schema(
+
+const userSchema = new mongoose.Schema(
     {
         username : {
             type : String,
-            required : true
-        },
+            required : true,
+            trim : true,
+            unique : true,
+            lowercase : true,
+            //to make the username searchable
+            index : true
+        } ,
 
         email : {
+            type : String,
+            required : true,
+            trim : true,
+            unique : true,
+            lowercase : true
+        },
+        
+        password : {
             type : String,
             required : true
         },
 
-        password : {
-            type  : String,
-            required : true
-        },
-
-        refreshToken : {
+        refreshToken :{
             type : String
         }
-    },
-    {timestamps : true}
+    }, {timestamps : true}
 )
+//hashing the password using bcrypt js
+userSchema.pre("save" , async function (next) {
+    if(!this.isModified("password")) return next();
 
-
-export const User = mongoose.model("User", userSchema);
-
-//hashing of password
-userSchema.pre("save", async function(next){
-    if(!isModified("password")) return next();
     this.password = await bcrypt.hash(this.password , 10);
+
     next();
 })
-//comparison 
-userSchema.methods.isPasswordCorrect = async function(password){
+
+//checking the password
+
+userSchema.methods.isPasswordCorrect = async function (password){
     return await bcrypt.compare(password, this.password);
 }
+
+//generating access and refresh token
 
 userSchema.methods.generateAccessToken  = async function(){
 
@@ -64,3 +74,8 @@ userSchema.methods.generateRefreshToken  = async function(){
         {expiresIn  : process.env.REFRESH_TOKEN_EXPIRY}
     )
 }
+
+
+
+
+export const User = mongoose.model("User" , userSchema);

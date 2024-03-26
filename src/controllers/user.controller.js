@@ -3,11 +3,12 @@ import ApiError from "../utils/ApiError.js"
 import {User} from "../models/user.model.js"
 import ApiResponse from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
-import mongoose from "mongoose"
+
 
 const generateAccessAndRefreshToken = async (userId) =>{
     try {
         const user = await User.findById(userId);
+        console.log(user)
         const accessToken = await user.generateAccessToken();
         const refreshToken = await user.generateRefreshToken();
         //adding the refresh token to the document
@@ -90,21 +91,21 @@ const loginUser = asyncHandler(async (req ,res )=>{
         throw new ApiError(400 , "Username or email is required");
     }
 
-    const registeredUser = await User.findOne({$or : [{username} , {email}]});
-
-    if(!registeredUser) throw new ApiError(404 , "User with such username or email is not found");
+    const user = await User.findOne({$or : [{username} , {email}]});
+    
+    if(!user) throw new ApiError(404 , "User with such username or email is not found");
 
     if(!password) throw new ApiError(404 , "Password is required");
 
-    const checkPassword = await registeredUser.isPasswordCorrect(password);
+    const checkPassword = await user.isPasswordCorrect(password);
 
     if(!checkPassword) throw new ApiError(404 , "Incorrect password");
 
-    const {accessToken , refreshToken} = await generateAccessAndRefreshToken(registeredUser._id);
+    const {accessToken , refreshToken} = await generateAccessAndRefreshToken(user._id);
 
     //getting the new user because we need refreshToken
 
-    const newUser = await User.findById(registeredUser._id).select("-password -refreshToken");
+    const newUser = await User.findById(user._id).select("-password -refreshToken");
     //options to make the cookie modifiable only from the backend 
     const options =  { 
         httpOnly : true,

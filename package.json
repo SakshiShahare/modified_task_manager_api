@@ -1,0 +1,26 @@
+{
+  "name": "all_in_one",
+  "version": "1.0.0",
+  "description": "a backend api with all the production level functionalities",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+  "keywords": [
+    "javascript",
+    "code"
+  ],
+  "author": "Sakshi Shahare",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.1",
+    "mongoose": "^8.2.2",
+    "mongoose-aggregate-paginate-v2": "^1.0.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

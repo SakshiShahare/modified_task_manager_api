@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken"
 
 const generateAccessAndRefreshToken = async (userId) =>{
     try {
+        console.log(userId);
         const user = await User.findById(userId);
         console.log(user)
         const accessToken = await user.generateAccessToken();
